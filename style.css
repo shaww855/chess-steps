@@ -1,0 +1,204 @@
+@media screen and (min-width:330px) and (max-width: 500px) { 
+    i.chessman{
+        line-height: 3rem;
+    }
+    i.chessman::before {
+        top: -10%;
+    }
+}
+@media screen and (max-width:330px){
+    i.chessman{
+        line-height: 1.5rem;
+        font-size: 1.5rem;
+    }
+    .cut::before, .cut::after{
+        top: 15%;
+    }
+}
+body{
+    margin: 2rem 0;
+}
+/*棋盘开始*/
+#board{
+    width: 90%;
+    max-width: 40rem;
+    margin: 2rem auto 0 auto;
+    padding: 4px;
+    border: 2px solid black;
+    background: blanchedalmond;
+}
+.chess{
+    border-top: .1rem solid black;
+    position: relative;
+}
+.chess:last-child{
+    transform: rotate(180deg);
+}
+.chess>.block{
+    width: 12.5%;
+    padding-bottom: 12.5%;
+    border:.1rem solid black;
+    border-top: 0;
+    float: left;
+}
+.chess::after{
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+.chess>.block+.block{
+    border-left: 0;
+}
+.chess>.block:nth-child(8n+1){
+    border-left:.1rem solid black;
+}
+.cross{
+    height: 50%;
+    width: 25%;
+    position: absolute;
+    left: 37.5%;
+    overflow: hidden;
+}
+.chess:nth-child(2){
+    background: black;
+}
+.chess:nth-child(2)>.cross{
+    bottom: 0;
+}
+.cross::after, .cross::before{
+    content: '';
+    width: .09rem;
+    height: 145%;
+    background: black;
+    position: absolute;
+    top: -22%;
+}
+.cross::after{
+    transform: rotate(-45.0deg);
+    left: 50%;
+}
+.cross::before{
+    transform: rotate(45.0deg);
+    left: 49%;
+}
+.mark-lb, .mark-rb, .mark-rt, .mark-lt{
+    position: relative;
+}
+.mark-lb::before, .mark-rb::before, .mark-rt::before, .mark-lt::before{
+    border: 2px solid black;
+    height: 20%;
+    width: 20%;
+    content: "";
+    position: absolute;
+}
+/*右下*/
+.mark-rb::before{
+    right: 6%;
+    bottom: 6%;
+    border-left: 0;
+    border-top: 0;
+}
+/*左下*/
+.mark-lb::before{
+    left: 6%;
+    bottom: 6%;
+    border-right: 0;
+    border-top: 0;
+}
+/*右上*/
+.mark-rt::before{
+    right: 6%;
+    top: 6%;
+    border-left: 0;
+    border-bottom: 0;
+}
+/*左上*/
+.mark-lt::before{
+    top: 6%;
+    left: 6%;
+    border-right: 0;
+    border-bottom: 0;
+}
+/*楚河汉界*/
+.cut{
+    padding-bottom: 10%;
+    border:.1rem solid black;
+    border-top: 0;
+    border-bottom: 0;
+    position: relative;
+}
+.cut::before, .cut::after{
+    position: absolute;
+    top: 30%;
+}
+.cut::before{
+    content: '楚河';
+    left: 25%;
+}
+.cut::after{
+    content: '汉界';
+    right: 25%;
+}
+/*棋子*/
+.chessman{
+    position: absolute;
+    font-style: normal;
+    width: 10%;
+    height: 20%;
+    text-align: center;
+    font-size: 2rem;
+    display: block;
+    border-radius: 2rem;
+    transform: rotate(180deg);
+    box-shadow: 0.2rem 0.3rem 0.8rem black;
+}
+.chessman.black{
+    border: .1rem solid black;
+    color: black;
+    background: #d6a342;
+}
+.chessman.red{
+    border: .1rem solid black;
+    color: #aa2106;
+    background: #d6a342;
+}
+.chessman::before{
+    position: relative;
+    top: 20%;
+}
+.ju::before{
+    content: '車';
+}
+.ma::before{
+    content: '馬'
+}
+.xiang::before{
+    content: '象';
+}
+.xiang.red::before{
+    content: '相';
+}
+.shi::before{
+    content: '士';
+}
+.shi.red::before{
+    content: '仕';
+}
+.jiang::before{
+    content: '將';
+}
+.jiang.red::before{
+    content: '帥';
+}
+.pao::before{
+    content: '砲';
+}
+.zu::before{
+    content: '卒';
+}
+.zu.red::before{
+    content: '兵';
+}
