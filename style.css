@@ -124,7 +124,7 @@ body{
 }
 /*楚河汉界*/
 .cut{
-    padding-bottom: 10%;
+    padding-bottom: 12.5%;
     border:.1rem solid black;
     border-top: 0;
     border-bottom: 0;
@@ -153,7 +153,7 @@ body{
     display: block;
     border-radius: 2rem;
     transform: rotate(180deg);
-    box-shadow: 0.2rem 0.3rem 0.8rem black;
+    box-shadow: 0 0 0.8rem black;
 }
 .chessman.black{
     border: .1rem solid black;
