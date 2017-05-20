@@ -14,21 +14,88 @@
 <body>
   <div class="container-fluid">
     <div class="row">
+      <div class="col-xs-12 col-md-6 col-sm-8">
+        <div id="board">
+          <div class="chess">
+            <div class="cross"></div>
+          </div>
+          <div class="cut"></div>
+          <div class="chess">
+            <div class="cross"></div>
+          </div>
+        </div>
+      </div>
       <div class="col-xs-12 col-md-6 col-sm-4">
         <div class="panel panel-default">
           <div class="panel-heading">象棋打谱</div>
           <div class="panel-body">
             <div class="form-group">
               <label class="radio-inline">
-                <input type="radio" name="player" id="player-red" value="red" checked>红方执子
+                <input type="radio" name="player" class="player" id="player-red" value="red" checked>红方执子
               </label>
               <label class="radio-inline">
-                <input type="radio" name="player" id="player-black" value="black">黑方执子
+                <input type="radio" name="player" class="player" id="player-black" value="black">黑方执子
               </label>
             </div>
             <div class="form-group">
               <label for="code">输入棋谱</label>
-              <input type="text" class="form-control" id="code" placeholder="例如：炮二平五" maxlength="4" value="炮二平五">
+              <textarea name="" cols="30" rows="5" class="form-control" id="code">马二进三
+卒７进１
+兵七进一
+炮２平３
+相七进五
+象３进５
+马八进七
+卒３进１
+车九平八
+卒３进１
+相五进七
+马２进４
+炮八平九
+马４进３
+相三进五
+马８进７
+车一进一
+炮８平９
+炮二进四
+马３进５
+马七进六
+车９平８
+炮二平九
+车８进７
+前炮平八
+车１进６
+炮八进三
+士４进５
+兵五进一
+马５进３
+相五进七
+车８平７
+马六退五
+车７进２
+车八进三
+车１进１
+车一平六
+车１退７
+马五进六
+炮９进４
+车八进四
+炮９进３
+马六进七
+炮３进３
+马七进九
+车７退１</textarea>
+            </div>
+            <div id="textinfo" class="alert alert-danger" role="alert">信息提示</div>
+            <div class="form-group">
+              <label for="codes">生成棋谱</label>
+              <div id="codes" class="list-group">
+                <a href="#" class="list-group-item active">Cras justo odio</a>
+                <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                <a href="#" class="list-group-item">Morbi leo risus</a>
+                <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item">Vestibulum at eros</a>
+              </div>
             </div>
             <div class="btn-group btn-group-justified" role="group">
               <div class="btn-group" role="group">
@@ -44,19 +111,8 @@
           </div>
         </div>
       </div>
-      <div class="col-xs-12 col-md-6 col-sm-8">
-        <div id="board">
-          <div class="chess">
-            <div class="cross"></div>
-          </div>
-          <div class="cut"></div>
-          <div class="chess">
-            <div class="cross"></div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>    
+  </div>
   <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
     crossorigin="anonymous"></script>

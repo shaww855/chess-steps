@@ -17,13 +17,22 @@ var board = {
         '六': 6,
         '七': 7,
         '八': 8,
-        '九': 9
+        '九': 9,
+        '１': 1,
+        '２': 2,
+        '３': 3,
+        '４': 4,
+        '５': 5,
+        '６': 6,
+        '７': 7,
+        '８': 8,
+        '９': 9
     },
     convertNumber: function (n) {
         var num = parseInt(n)
         if (isNaN(num)) num = this.numberList[n]
         if (num === undefined || num > 9) {
-            console.log('请输入正确的步进数！')
+            console.info('请输入正确的步进数！')
             return
         }
         return num
@@ -50,15 +59,22 @@ var board = {
         $('.chess').eq(0).find('.chessman').addClass('black')
         $('.chess').eq(1).find('.chessman').addClass('red')
     },
+    showText: function (t) {
+        clearTimeout(this.timeId)
+        $('#textinfo').text(t).slideDown()
+        this.timeId = setTimeout(function () {
+            $('#textinfo').slideUp()
+        }, 3000)
+    },
     eatOrNot: function (x, y) {
         var el = $('.chessman[location=' + x + '-' + y + ']')
-        console.log('目的地', el)
+        console.info('目的地', el)
         if (el.length == 0) {
-            console.log('目的地无棋子，允许移动')
+            this.showText('目的地无棋子，允许移动')
             return true
         }
         if (el.hasClass(this.player)) {
-            console.log('目的地有己方棋子，禁止移动')
+            this.showText('目的地有己方棋子，禁止移动')
             return false
         }
         el.remove()
@@ -72,7 +88,7 @@ var board = {
         switch (code[0]) {
             case '车':
             case '車':
-                targetClass = 'che'
+                targetClass = 'ju'
                 break
             case '马':
             case '馬':
@@ -99,13 +115,14 @@ var board = {
                 targetClass = 'zu'
                 break
             default:
-                console.log('似乎输入了错误的棋子名称，请重试')
+                this.showText('似乎输入了错误的棋子名称，请重试')
                 return
         }
         //结合执子方及位置选中具体棋子
         //象棋行棋步骤参考 https://zhidao.baidu.com/question/3673556.html
         //需要注意的是：目前未判断棋子在同一竖线上的情况
         //2017年5月17日16:00:38
+        //象棋规则参考 http://www.xqbase.com/protocol/rule.htm
         var $chessman = $('.' + targetClass + '.' + this.player)
         $chessman.each(function () {
             if (board.convertNumber($(this).attr('location').split('-')[0]) == board.convertNumber(code[1])) {
@@ -117,16 +134,15 @@ var board = {
         })
         //未找到排错
         if ($chessman === undefined) {
-            console.log('未找到' + code[0] + code[1] + "，请检查！")
+            this.showText('未找到' + code[0] + code[1] + "，请检查！")
             return
         }
-        console.log('准备移动', code[0] + code[1])
+        console.info('准备移动', code[0] + code[1])
         // $chessman.removeClass('red black')
         //计算落子点坐标
         beforeLocation.x = parseInt($chessman.attr('location').split('-')[0])
         beforeLocation.y = parseInt($chessman.attr('location').split('-')[1])
-        console.log($chessman, $chessman.attr('location').split('-')[1])
-        console.log('移动前坐标', beforeLocation)
+        console.info('移动前坐标', beforeLocation)
         //未判断马象士
         switch (code[2]) {
             //平：Y不变，直接改X
@@ -144,10 +160,10 @@ var board = {
                 afertLocation.y = (parseInt(beforeLocation.y) - this.convertNumber(code[3]))
                 break
             default:
-                console.log('走法只能为进、退、平，请检查')
+                this.showText('走法只能为进、退、平，请检查')
                 return
         }
-        console.log('移动后坐标', afertLocation)
+        console.info('移动后坐标', afertLocation)
 
         /**
          * 判断移动后坐标是否超出棋盘
@@ -156,9 +172,9 @@ var board = {
         //判断落子点是否存在棋子
         var $targetChessman = $('.chessman[location=' + afertLocation.x + '-' + afertLocation.y + ']')
         if ($targetChessman.length > 0) {
-            console.log('落子点存在棋子');
+            console.info('落子点存在棋子');
             if ($targetChessman.hasClass(this.player)) {
-                console.log('自己人')
+                this.showText('自己人')
                 return false
             }
         }
@@ -166,7 +182,6 @@ var board = {
         $targetChessman = $('.chessman[location=' + (10 - afertLocation.x) + '-' + (11 - afertLocation.y) + ']').not('.' + this.player)
         $targetChessman.remove()
         $chessman.attr('location', afertLocation.x + '-' + afertLocation.y)
-        console.log($targetChessman);
     }
 }
 /**
@@ -222,9 +237,34 @@ $(function () {
     )
     //添加棋子
     board.resetChess()
+    $('#reset').click(function () {
+        if (confirm('确认复位棋盘？')) board.resetChess()
+    })
     //
-    $('#go').on('click', function () {
-        board.player = $(":checked").val()
-        board.moveChessman($.trim($('#code').val()))
+    $('#go').click(function () {
+        board.player = $(".player:checked").val()
+        $('#codes a').each(function(){
+            if($(this).hasClass('disabled')) return
+            $(this).addClass('active').prevAll('.active').removeClass('active')
+            board.moveChessman($(this).text())
+        })
+        // $.trim($('#code').val()).split(/\n/)
+    })
+    var codeChangeTimeId
+    $('#code').on('input', function () {
+        clearTimeout(codeChangeTimeId)
+        codeChangeTimeId = setTimeout(function () {
+            $('#codes').empty().append(function () {
+                var html = '', round = 0
+                $('#code').val().split(/\n/).forEach(function (element, index, array) {
+                    if (index % 2 == 0) html += '<a href="javascript:;" class="list-group-item disabled">第 ' + (++round) + ' 回合</a>'
+                    if ($.trim(element) == '' || element.length != 4)
+                        html += '<a href="javascript:;" class="list-group-item" data-index="error">棋谱有误，错误内容（' + element + '）</a>'
+                    else
+                        html += '<a href="javascript:;" class="list-group-item" data-index="' + index + '">' + element + '</a>'
+                })
+                return html
+            })
+        }, 500);
     })
 })

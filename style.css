@@ -16,13 +16,13 @@
     }
 }
 body{
-    margin: 2rem 0;
+    margin: 4rem auto;
 }
 /*棋盘开始*/
 #board{
     width: 90%;
     max-width: 40rem;
-    margin: 2rem auto 0 auto;
+    margin: 0 auto 4rem auto;
     padding: 4px;
     border: 2px solid black;
     background: blanchedalmond;
@@ -201,4 +201,12 @@ body{
 }
 .zu.red::before{
     content: '兵';
+}
+/*控制台*/
+#textinfo{
+    display: none;
+}
+#codes{
+    max-height: 400px;
+    overflow: auto;
 }
