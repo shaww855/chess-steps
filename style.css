@@ -31,7 +31,7 @@ body{
     border-top: .1rem solid black;
     position: relative;
 }
-.chess:last-child{
+.chess.red{
     transform: rotate(180deg);
 }
 .chess>.block{
@@ -221,6 +221,8 @@ body{
     border-radius: 2rem;
     transform: rotate(180deg);
     box-shadow: 0 0 0.8rem black;
+    z-index: 1;
+    transition: all 1s;
 }
 .chessman.black{
     border: .1rem solid black;
@@ -270,10 +272,13 @@ body{
     content: '兵';
 }
 /*控制台*/
-#textinfo{
+#textinfo,#code-list{
     display: none;
 }
 #codes{
-    max-height: 400px;
+    max-height: 300px;
     overflow: auto;
+}
+#board-input textarea{
+    margin-bottom: 15px;
 }

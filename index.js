@@ -1,13 +1,5 @@
 var board = {
-    // chessmanList: {
-    //     '车':'ju'
-    //     '马':'ma'
-    //     '象':'xiang'
-    //     '士':'shi'
-    //     '':'jiang'
-    //     '':'pao'
-    //     '':'zu'
-    // },
+    codeList: new Array(),
     numberList: {
         '一': 1,
         '二': 2,
@@ -28,7 +20,36 @@ var board = {
         '８': 8,
         '９': 9
     },
+    calculateChess: function () {
+        //演算棋谱
+        $('#codes')
+            .empty()
+            .append(function () {
+                var html = '',
+                    round = 0
+                $('#code').val().split(/\n/).forEach(function (element, index, array) {
+                    if (index % 2 == 0) html += '<a href="javascript:;" class="list-group-item disabled">第 ' + (++round) + ' 回合</a>'
+                    if ($.trim(element) == '' || element.length != 4)
+                        html += '<a href="javascript:;" class="list-group-item" data-index="error">棋谱有误，错误内容（' + element + '）</a>'
+                    else
+                        html += '<a href="javascript:;" class="list-group-item" data-index="' + index + '">' + element + '</a>'
+                })
+                return html
+            })
+            .children().each(function () {
+                board.player = $(".player:checked").val()
+                if ($(this).hasClass('disabled')) return
+                $(this).addClass('active').prevAll('.active').removeClass('active')
+                board.calculateAndMove($(this).text())
+                $(".player:checked").prop('checked', false).parent().siblings().children().prop('checked', true)
+            })
+            //添加棋局开始选项
+            .end().prepend('<a href="javascript:;" class="list-group-item">棋局开始</a>')
+            //还原棋局开始
+            .children().first().click()
+    },
     convertNumber: function (n) {
+        //文本转数字,判断是否超出棋盘
         var num = parseInt(n)
         if (isNaN(num)) num = this.numberList[n]
         if (num === undefined || num > 9) {
@@ -38,6 +59,7 @@ var board = {
         return num
     },
     resetChess: function () {
+        //放置棋子
         $('.chessman').remove()
         $('.chess').append('\
             <i class="chessman ju" location="1-1"></i>\
@@ -60,27 +82,14 @@ var board = {
         $('.chess').eq(1).find('.chessman').addClass('red')
     },
     showText: function (t) {
+        //错误提示
         clearTimeout(this.timeId)
         $('#textinfo').text(t).slideDown()
         this.timeId = setTimeout(function () {
             $('#textinfo').slideUp()
         }, 3000)
     },
-    eatOrNot: function (x, y) {
-        var el = $('.chessman[location=' + x + '-' + y + ']')
-        console.info('目的地', el)
-        if (el.length == 0) {
-            this.showText('目的地无棋子，允许移动')
-            return true
-        }
-        if (el.hasClass(this.player)) {
-            this.showText('目的地有己方棋子，禁止移动')
-            return false
-        }
-        el.remove()
-        return true
-    },
-    moveChessman: function (code) {
+    calculateAndMove: function (code) {
         var targetClass,
             targetName,
             targetNum,
@@ -138,10 +147,8 @@ var board = {
         }
         //结合执子方及位置选中具体棋子
         //象棋行棋步骤参考 https://zhidao.baidu.com/question/3673556.html
-        //2017年5月17日16:00:38
         //象棋规则参考 http://www.xqbase.com/protocol/rule.htm
         var $chessman = $('.' + targetClass + '.' + this.player)
-        console.log('.' + targetClass + '.' + this.player)
         //判断两个棋子是否在同一竖线
         if (targetNum !== undefined) {
             var max = parseInt($chessman.eq(0).attr('location')[2]),
@@ -169,7 +176,6 @@ var board = {
             return
         }
         console.info('准备移动', code[0] + code[1])
-        // $chessman.removeClass('red black')
         //计算落子点坐标
         beforeLocation = {
             x: parseInt($chessman.attr('location').split('-')[0]),
@@ -275,10 +281,7 @@ var board = {
                 }
         }
         console.info('移动后坐标', afertLocation)
-
-        /**
-         * 判断移动后坐标是否超出棋盘
-         */
+        //判断移动后坐标是否超出棋盘
         if (afertLocation.x > 9 || afertLocation.y > 10) {
             this.showText('落子点超出棋谱，请检查！')
             return
@@ -296,6 +299,10 @@ var board = {
         $targetChessman = $('.chessman[location=' + (10 - afertLocation.x) + '-' + (11 - afertLocation.y) + ']').not('.' + this.player)
         $targetChessman.remove()
         $chessman.attr('location', afertLocation.x + '-' + afertLocation.y)
+        this.codeList.push({
+            'black': $('.chessman.black').clone(),
+            'red': $('.chessman.red').clone()
+        })
     }
 }
 /**
@@ -360,35 +367,66 @@ $(function () {
     )
     //添加棋子
     board.resetChess()
-    $('#reset').click(function () {
-        if (confirm('确认复位棋盘？')) board.resetChess()
-    })
-    //
-    $('#go').click(function () {
-        $('#codes a').each(function () {
-            board.player = $(".player:checked").val()
-            if ($(this).hasClass('disabled')) return
-            $(this).addClass('active').prevAll('.active').removeClass('active')
-            board.moveChessman($(this).text())
-            $(".player:checked").parent().siblings().click();
+    $(document)
+        .on('click', '#prev', function () {
+            var cur = $('#codes .active'),
+                curIndex = parseInt(cur.attr('data-index'))
+            if (isNaN(curIndex)) {
+                board.showText('别点了，已经是第一步了。')
+                return
+            }
+            cur.removeClass('active')
+            if (curIndex == 0) {
+                $('#codes a').first().click()
+                return
+            }
+            $('#codes a[data-index=' + (parseInt(cur.attr('data-index')) - 1) + ']').click()
         })
-        // $.trim($('#code').val()).split(/\n/)
-    })
-    var codeChangeTimeId
-    $('#code').on('input', function () {
-        clearTimeout(codeChangeTimeId)
-        codeChangeTimeId = setTimeout(function () {
-            $('#codes').empty().append(function () {
-                var html = '', round = 0
-                $('#code').val().split(/\n/).forEach(function (element, index, array) {
-                    if (index % 2 == 0) html += '<a href="javascript:;" class="list-group-item disabled">第 ' + (++round) + ' 回合</a>'
-                    if ($.trim(element) == '' || element.length != 4)
-                        html += '<a href="javascript:;" class="list-group-item" data-index="error">棋谱有误，错误内容（' + element + '）</a>'
-                    else
-                        html += '<a href="javascript:;" class="list-group-item" data-index="' + index + '">' + element + '</a>'
-                })
-                return html
-            })
-        }, 500);
-    })
+        .on('click', '#next', function () {
+            var cur = $('#codes .active'),
+                curIndex = parseInt(cur.attr('data-index'))
+            console.log(curIndex)
+            if (isNaN(curIndex)) {
+                //如果当前是第一句
+                $('#codes a[data-index=0]').click()
+                return
+            }
+            if ($('#codes a[data-index=' + (curIndex + 1) + ']').length == 0) {
+                //最后一句
+                board.showText('别点了，已经是最后一步了。')
+                return
+            }
+            $('#codes a[data-index=' + (curIndex + 1) + ']').click()
+        })
+        .on('click', '#codes a:not(.disabled)', function () {
+            //展示棋谱中的某一步
+            var index = parseInt($(this).attr('data-index'))
+            if (isNaN(index)) {
+                board.resetChess()
+            } else {
+                $('.chessman').remove()
+                $('.chess.black').append(board.codeList[index]['black'])
+                $('.chess.red').append(board.codeList[index]['red'])
+            }
+            $('#codes .active').removeClass('active')
+            $(this).addClass('active')
+        })
+        .on('click', '#complete', function () {
+            //输入完成
+            var $btn = $(this).button('loading')
+            board.calculateChess()
+            $btn.button('reset')
+            $('#board-input').slideUp()
+            $('#code-list').slideDown()
+
+        })
+        .on('click', '#edit', function () {
+            //重新编辑
+            $('#board-input').slideDown()
+            $('#code-list').slideUp()
+        })
+        .on('click', '#reset', function () {
+            //清空棋谱
+            if (confirm('确认复位棋盘？')) board.resetChess()
+        })
 })
