@@ -116,14 +116,28 @@
                 <label for="basic-url">自动播放</label>
                 <div class="input-group">
                   <span class="input-group-addon">间隔（秒）</span>
-                  <input type="tel" class="form-control" id="second" value="2">
+                  <input type="number" class="form-control" id="second" value="2" pattern="[0-9]\*">
                   <span class="input-group-btn">
                   <button class="btn btn-primary" type="button" id="auto-play">播放</button>
                 </span>
                 </div>
               </div>
             </div>
-            <div id="textinfo" class="alert alert-danger" role="alert">信息提示</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" tabindex="-1" role="dialog" id="text-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12 text-center" id="text-content">123</div>
           </div>
         </div>
       </div>

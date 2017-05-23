@@ -28,10 +28,10 @@ var board = {
         $('#control').slideDown()
     },
     autoPlay: function () {
-        console.log(board.autoPlayId)
         var $next = $('#codes .active').next()
         if ($next.length == 0) {
             board.showText('播放完毕')
+            $('#pause-play').click()
             return
         }
         if ($next.hasClass('disabled')) {
@@ -39,9 +39,14 @@ var board = {
         } else {
             $next.click()
         }
+        var t = parseInt($('#second').val())
+        if (isNaN(t)) {
+            board.showText('请输入数字！')
+            return
+        }
         board.autoPlayId = setTimeout(function (timeCount) {
             timeCount()
-        }.bind(this, arguments.callee), parseInt($('#second').val()) * 1000);
+        }.bind(this, arguments.callee), t * 1000);
     },
     isPlayerLocked: false,
     lockedPlayer: function () {
@@ -121,6 +126,8 @@ var board = {
         $('.chess').eq(1).find('.chessman').addClass('red')
     },
     showText: function (t) {
+        $('#text-content').html(t)
+        $('#text-modal').modal('show')
         //错误提示
         clearTimeout(this.timeId)
         $('#textinfo').text(t).slideDown()
@@ -457,7 +464,8 @@ $(function () {
                 $('.play :checked').prop('checked', false)
                 $('#player-' + board.codeList[index]['curplayer']).prop('checked', true)
             }
-            $('#codes').stop().animate({ scrollTop: $(this).index() * 41 }, 300);
+            if ($('#pause-play').length > 0)
+                $('#codes').stop().animate({ scrollTop: $(this).index() * 41 }, 300)
             $('#codes .active').removeClass('active')
             $(this).addClass('active')
         })
@@ -487,7 +495,7 @@ $(function () {
             }
         })
         .on('click', '#auto-play', function () {
-            scrollTo(0, 0);
+            $('body').animate({ scrollTop: 0 }, 300)        
             $('#control').slideUp()
             board.autoPlay()
             $(this).prop('id', 'pause-play').text('暂停')
@@ -495,5 +503,11 @@ $(function () {
         .on('click', '#pause-play', function () {
             board.stopPlay()
             $(this).prop('id', 'auto-play').text('播放')
+        })
+        .on('shown.bs.modal', '#text-modal', function () {
+            //自动关闭模态框
+            setTimeout(function () {
+                $(this).modal('hide')
+            }.bind(this), 2000)
         })
 })
